@@ -17,7 +17,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik:v2.2
+      - image: traefik:v2.10
         name: traefik-ingress-lb
         ports:
         - name: http
@@ -55,12 +55,12 @@ spec:
         # - --log.level=debug
 
         # Let's Encrypt Configurtion.
-        - --certificatesresolvers.default.acme.email=<SEU_EMAIL>
+        - --certificatesresolvers.default.acme.email=leandrolsnr@gmail.com
         - --certificatesresolvers.default.acme.storage=acme.json
         - --certificatesresolvers.default.acme.tlschallenge
         # Use the staging ACME server. Uncomment this while testing to prevent
         # hitting rate limits in production.
-        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+        #- --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
         
         - --accesslog=true
         - --log=true
