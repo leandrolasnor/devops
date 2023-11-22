@@ -35,3 +35,11 @@ sudo iptables -P INPUT ACCEPT
 sudo iptables -P OUTPUT ACCEPT
 sudo iptables -P FORWARD ACCEPT
 sudo iptables -F
+
+##########################################
+
+sudo docker run -d --restart=unless-stopped \
+  -p 80:80 -p 443:443 \
+  -v /opt/rancher:/var/lib/rancher \
+  --privileged \
+  rancher/rancher:latest
