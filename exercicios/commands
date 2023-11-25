@@ -1,0 +1,81 @@
+docker run -d --restart=unless-stopped \
+  -p 80:80 -p 443:443 \
+  -v /opt/rancher:/var/lib/rancher \
+  --privileged \
+  rancher/rancher:latest
+
+docker stop -f $(docker ps -a -q)
+docker rm -f $(docker ps -a -q)
+docker volume rm $(docker volume ls -q)
+
+sudo rm -rf /etc/kubernetes
+
+sudo nano /etc/sysctl.conf
+#net.bridge.bridge-nf-call-iptables=1
+sudo sysctl -p /etc/sysctl.conf 
+
+
+  https://www.suse.com/support/kb/doc/?id=000020031
+  https://www.cyberciti.biz/faq/howto-set-sysctl-variables/
+
+
+
+docker rm -fv  $(docker ps -a -q) 
+docker volume rm -f $(docker volume ls)
+sudo reboot -h now
+sudo su
+rm -rf /run/secrets/kubernetes.io
+rm -rf /var/lib/etcd
+rm -rf /var/lib/kubelet
+rm -rf /var/lib/rancher
+rm -rf /etc/kubernetes
+exit
+docker volume rm -f $(docker volume ls)
+sudo reboot -h now
+
+sudo rm -rf /opt/rke/etc/kubernetes/ssl
+
+
+# kubectl get pods --all-namespaces -o wide
+# kubectl edit deployment cattle-cluster-agent -n cattle-system
+# kubectl logs  cattle-cluster-agent-97794468-kjs65 -n cattle-system
+# kubectl exec -it cattle-cluster-agent-6cb8875d79-lm9ph -n cattle-system
+# kubectl exec -it cattle-cluster-agent-6cb8875d79-lm9ph -- sh
+
+https://github.com/rancher/rancher/issues/16454#issuecomment-786725616
+
+kubectl -n cattle-system patch  deployments cattle-cluster-agent --patch '{
+    "spec": {
+        "template": {
+            "spec": {
+                "hostAliases": [
+                    {
+                      "hostnames":
+                      [
+                        "rancher.ronsal.com.br"
+                      ],
+                      "ip": "144.22.179.241"
+                    }
+                ]
+            }
+        }
+    }
+}'
+
+kubectl -n cattle-system patch  daemonsets cattle-node-agent --patch '{
+    "spec": {
+        "template": {
+            "spec": {
+                "hostAliases": [
+                    {
+                      "hostnames":
+                      [
+                        "rancher.ronsal.com.br"
+                      ],
+                      "ip": "144.22.179.241"
+                    }
+                ]
+            }
+        }
+    }
+}'
