@@ -3,6 +3,7 @@
 write_files:
   -   path: /home/ubuntu/setup.sh
       permissions: "0777"
+      owner: ubuntu:ubuntu
       encoding: b64
       content: ${setup}
 

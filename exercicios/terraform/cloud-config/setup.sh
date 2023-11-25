@@ -14,3 +14,4 @@ then
   sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 -v /opt/rancher:/var/lib/rancher --privileged rancher/rancher:latest
 fi
 sudo rm -rf /home/ubuntu/setup.sh
+exit 0
