@@ -23,12 +23,14 @@ sudo sysctl -p /etc/sysctl.conf
 docker rm -fv  $(docker ps -a -q) 
 docker volume rm -f $(docker volume ls)
 sudo reboot -h now
+
+sudo rm -rf /etc/kubernetes/ssl
+sudo rm -rf /var/lib/etcd
+sudo rm -rf /etc/cni
+sudo rm -rf /opt/cni
+sudo rm -rf /var/run/calico
+
 sudo su
-rm -rf /run/secrets/kubernetes.io
-rm -rf /var/lib/etcd
-rm -rf /var/lib/kubelet
-rm -rf /var/lib/rancher
-rm -rf /etc/kubernetes
 exit
 docker volume rm -f $(docker volume ls)
 sudo reboot -h now
