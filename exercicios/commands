@@ -15,8 +15,8 @@ sudo nano /etc/sysctl.conf
 sudo sysctl -p /etc/sysctl.conf 
 
 
-  https://www.suse.com/support/kb/doc/?id=000020031
-  https://www.cyberciti.biz/faq/howto-set-sysctl-variables/
+https://www.suse.com/support/kb/doc/?id=000020031
+https://www.cyberciti.biz/faq/howto-set-sysctl-variables/
 
 
 

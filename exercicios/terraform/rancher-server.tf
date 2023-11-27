@@ -1,20 +1,17 @@
-data "template_file" "cloud-config" {
+data "template_file" "rancher-server-cloud-config" {
     template = "${file("./cloud-config/cloud-config.yaml")}"
     vars = {
         setup = "${base64encode(file("./cloud-config/setup.sh"))}"
     }
 }
 
-resource "oci_core_instance" "ubuntu_instance" {
+resource "oci_core_instance" "rancher-server" {
     # Required
-    count = var.instances_count
-    display_name = count.index == 0 ? "rancher-server" : format("k8s-%01d", count.index)
-    preserve_boot_volume = false
+    display_name = "rancher-server"
     availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
     compartment_id = "ocid1.compartment.oc1..aaaaaaaanfutlss2ndwqusftp5yz3g2oaxgf3zvbzsbxc2n4a5aq3nrlynsa"
     shape = "VM.Standard.E3.Flex"
     shape_config {
-        #Optional
         ocpus = 4
         memory_in_gbs = 8
     }
@@ -29,6 +26,6 @@ resource "oci_core_instance" "ubuntu_instance" {
     }
     metadata = {
         ssh_authorized_keys = file("~/.ssh/oci.pub")
-        user_data = "${base64encode(data.template_file.cloud-config.rendered)}"
+        user_data = "${base64encode(data.template_file.rancher-server-cloud-config.rendered)}"
     }
 }

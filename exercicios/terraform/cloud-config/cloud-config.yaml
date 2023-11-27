@@ -2,10 +2,11 @@
 
 write_files:
   -   path: /home/ubuntu/setup.sh
+      defer: true
       permissions: "0777"
       owner: ubuntu:ubuntu
       encoding: b64
       content: ${setup}
 
 runcmd:
- - bash ./home/ubuntu/setup.sh
+ - bash /home/ubuntu/setup.sh

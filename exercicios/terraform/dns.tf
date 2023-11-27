@@ -1,9 +1,12 @@
 locals {
-  nodes = slice(oci_core_instance.ubuntu_instance, 1, length(oci_core_instance.ubuntu_instance))
+  nodes = [
+    oci_core_instance.k8s-1,
+    oci_core_instance.k8s-2
+  ]
 }
 
 resource "oci_dns_rrset" "rancher_server" {
-  depends_on = [ oci_core_instance.ubuntu_instance ]
+  depends_on = [ oci_core_instance.rancher-server ]
   zone_name_or_id = var.dns_zone_id
   compartment_id = var.compartment_id
   domain = var.domain
@@ -11,7 +14,7 @@ resource "oci_dns_rrset" "rancher_server" {
 
   items {
     domain = var.domain
-    rdata = oci_core_instance.ubuntu_instance[0].public_ip
+    rdata = oci_core_instance.rancher-server.public_ip
     rtype = var.typeA
     ttl = var.rrset_items_ttl
   }
