@@ -10,3 +10,7 @@ sudo ufw allow from 10.0.0.0/24 to any port 9099 proto tcp
 sudo ufw allow from 10.0.0.0/24 to any port 10250 proto tcp
 sudo ufw allow from 10.0.0.0/24 to any port 10254 proto tcp
 sudo ufw allow from 10.0.0.0/24 to any port 30000:32767 proto tcp
+sudo iptables -P INPUT ACCEPT
+sudo iptables -P OUTPUT ACCEPT
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -F
