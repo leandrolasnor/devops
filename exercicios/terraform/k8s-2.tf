@@ -2,6 +2,7 @@ data "template_file" "k8s-2-cloud-config" {
     template = "${file("./cloud-config/cloud-config.yaml")}"
     vars = {
         setup = "${base64encode(file("./cloud-config/setup.sh"))}"
+        ufw = "${base64encode(file("./cloud-config/ufw.sh"))}"
     }
 }
 

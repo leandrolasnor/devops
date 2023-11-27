@@ -7,6 +7,13 @@ write_files:
       owner: ubuntu:ubuntu
       encoding: b64
       content: ${setup}
+  -   path: /home/ubuntu/ufw.sh
+      defer: true
+      permissions: "0777"
+      owner: ubuntu:ubuntu
+      encoding: b64
+      content: ${ufw}
 
 runcmd:
  - bash /home/ubuntu/setup.sh
+ - bash /home/ubuntu/ufw.sh
