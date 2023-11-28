@@ -6,10 +6,10 @@ metadata:
   name: whoami5
   # namespace: whoami5
   labels:
-    allow.http: "false"
+    allow.http: "true"
     application: whoami5
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       application: whoami5
@@ -39,12 +39,12 @@ spec:
   - port: 80 # Porta a ser exposta pelo SERVICE
     targetPort: 8000 # Porta que a aplicação está rodando no POD
   selector:
-    application: whoami5
+    service: whoami5
 
 
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: whoami5
   annotations:
@@ -53,12 +53,16 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls.certresolver: default
 spec:
   rules:
-    - host: app.rancher.<SEU_DOMINIO>
+    - host: app.rancher.ronsal.com.br
       http:
         paths:
           - backend:
-              serviceName: whoami5
-              servicePort: 80
+              service:
+                name: whoami5
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
 
 
 

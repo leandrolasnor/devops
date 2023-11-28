@@ -58,7 +58,7 @@ spec:
 
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: graylog
@@ -76,12 +76,10 @@ rules:
   - get
   - list
   - watch
-  verbs:
-  - get
 
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: graylog
@@ -104,7 +102,6 @@ subjects:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   name: elasticsearch
   namespace: graylog
 spec:
@@ -115,7 +112,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         service: elasticsearch
     spec:
@@ -146,16 +142,15 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   namespace: graylog
   labels:
     service: elasticsearch
   name: elasticsearch
 spec:
-  clusterIP: None
+  type: ClusterIP
   ports:
   - name: headless
-    port: 55555
+    port: 9200
     targetPort: 0
   selector:
     service: elasticsearch
@@ -171,7 +166,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: graylog
-  creationTimestamp: null
   name: mongo
 spec:
   replicas: 1
@@ -181,7 +175,6 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         service: mongo
     spec:
@@ -210,15 +203,15 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: graylog
-  creationTimestamp: null
   labels:
     service: mongo
   name: mongo
 spec:
-  clusterIP: None
+  # clusterIP: None
+  type: ClusterIP
   ports:
   - name: headless
-    port: 55555
+    port: 27017
     targetPort: 0
   selector:
     service: mongo
@@ -243,9 +236,11 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   name: graylog
   namespace: graylog
+  labels:
+    allow.http: "true"
+    application: graylog
 spec:
   replicas: 1
   selector:
@@ -254,25 +249,26 @@ spec:
   strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         service: graylog
     spec:
       serviceAccount: graylog
       containers:
       - env:
+        - name: GRAYLOG_HTTP_ENABLE_CORS
+          value: "true"
         - name: GRAYLOG_WEB_ENDPOINT_URI
-          value: http://graylog.rancher.<dominio>/api
+          value: https://graylog.rancher.ronsal.com.br/api
         - name: GRAYLOG_ELASTICSEARCH_HOSTS
           value: "http://elasticsearch.graylog.svc.cluster.local:9200"
         - name: ELASTICSEARCH_DISCOVERY_ZEN_PING_MULTICAST_ENABLED
           value: "false"
         - name: ELASTICSEARCH_DISCOVERY_ZEN_PING_UNICAST_HOSTS
           value: "elasticsearch.graylog.svc.cluster.local:9300"
-        #- name: GRAYLOG_PASSWORD_SECRET
-        #  value: admin
-        #- name: GRAYLOG_ROOT_PASSWORD_SHA2
-        #  value: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+        - name: GRAYLOG_PASSWORD_SECRET
+          value: 1q15F2w5286c3e2@
+        # - name: GRAYLOG_ROOT_PASSWORD_SHA2
+          # value: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
         image: docker.io/graylog2/server:2.3.0-1 
         #image: graylog/graylog:3.0
         # Repositório oficial - docker.io/graylog2/server:2.3.0-1
@@ -308,15 +304,14 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: null
   namespace: graylog
   labels:
     service: graylog
   name: graylog
 spec:
-  type: "ClusterIP"
+  type: ClusterIP
   ports:
-  - port: 9000
+  - port: 80
     targetPort: 9000
     protocol: TCP
     name: tcp
@@ -329,22 +324,27 @@ spec:
 
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: graylog
   name: graylog
   annotations:
-    allow.http: "false"
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
 spec:
   rules:
-  - host: graylog.rancher.dev-ops-ninja.com
+  - host: graylog.rancher.ronsal.com.br
     http:
       paths:
         - path: /
+          pathType: Prefix
           backend:
-            serviceName: graylog
-            servicePort: 9000
+            service:
+              name: graylog
+              port:
+                number: 80
 
 
 ---
@@ -355,7 +355,7 @@ metadata:
   name: fluentd
 
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   namespace: graylog
@@ -374,7 +374,7 @@ rules:
 
 ---
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: graylog
   name: fluentd
