@@ -58,6 +58,7 @@ spec:
         - --certificatesresolvers.default.acme.email=leandrolsnr@gmail.com
         - --certificatesresolvers.default.acme.storage=acme.json
         - --certificatesresolvers.default.acme.tlschallenge
+        - --certificatesResolvers.cfresolver.acme.dnsChallenge.resolvers=1.1.1.1:53,1.0.0.1:53
         # Use the staging ACME server. Uncomment this while testing to prevent
         # hitting rate limits in production.
         - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory

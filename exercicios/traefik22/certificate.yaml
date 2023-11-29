@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rancher.ronsal.com.br
+  namespace: cert-manager
+spec:
+  secretName: rancher.ronsal.com.br-tls
+  commonName: rancher.ronsal.com.br
+  dnsNames:
+    - rancher.ronsal.com.br
+    - "*.rancher.ronsal.com.br"
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
