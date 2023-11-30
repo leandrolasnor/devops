@@ -3,13 +3,16 @@ kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
   name: traefik-daemon-set
+  namespace: traefik
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: default
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
+  tls:
+    - secretName: rancher-ronsal-com-br-tls
   rules:
-    - host: traefik.rancher.ronsal.com.br
+    - host: traefik.ronsal.com.br
       http:
         paths:
           - backend:

@@ -4,7 +4,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: whoami5
-  namespace: default
+  # namespace: default
   labels:
     allow.http: "true"
     application: whoami5
@@ -32,14 +32,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: whoami5
-  namespace: default
 spec:
   type: ClusterIP
   ports:
   - port: 80 # Porta a ser exposta pelo SERVICE
     targetPort: 8000 # Porta que a aplicação está rodando no POD
   selector:
-    service: whoami5
+    application: whoami5
 
 
 ---
@@ -47,14 +46,15 @@ kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
   name: whoami5
-  namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.tls: "true"
-    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: cloudflare
 spec:
+  tls:
+    - secretName: rancher-ronsal-com-br-tls
   rules:
-    - host: app.rancher.ronsal.com.br
+    - host: app.ronsal.com.br
       http:
         paths:
           - backend:

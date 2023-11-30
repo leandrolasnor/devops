@@ -3,9 +3,9 @@ kind: ClusterIssuer
 metadata:
   name: letsencrypt
   namespace: cert-manager
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    acme.cert-manager.io/http01-edit-in-place: "true"
+  # annotations:
+  #   cert-manager.io/cluster-issuer: letsencrypt
+  #   acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   acme:
     # The ACME server URL

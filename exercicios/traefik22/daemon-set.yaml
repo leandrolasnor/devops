@@ -43,26 +43,18 @@ spec:
 
         # Specify that we want to use Traefik as an Ingress Controller.
         - --providers.kubernetesingress
+        - --providers.kubernetescrd
 
         # Define two entrypoint ports, and setup a redirect from HTTP to HTTPS.
         - --entryPoints.web.address=:80
         - --entryPoints.websecure.address=:443
         - --entrypoints.web.http.redirections.entryPoint.to=websecure
         - --entrypoints.web.http.redirections.entryPoint.scheme=https
+        # - --entrypoints.websecure.http.tls
 
         # Enable debug logging. Useful to work out why something might not be
         # working. Fetch logs of the pod.
-        # - --log.level=debug
-
-        # Let's Encrypt Configurtion.
-        - --certificatesresolvers.default.acme.email=leandrolsnr@gmail.com
-        - --certificatesresolvers.default.acme.storage=acme.json
-        - --certificatesresolvers.default.acme.tlschallenge
-        - --certificatesResolvers.cfresolver.acme.dnsChallenge.resolvers=1.1.1.1:53,1.0.0.1:53
-        # Use the staging ACME server. Uncomment this while testing to prevent
-        # hitting rate limits in production.
-        - --certificatesresolvers.default.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-        
+        - --log.level=debug        
         - --accesslog=true
         - --log=true
         - --metrics=true
